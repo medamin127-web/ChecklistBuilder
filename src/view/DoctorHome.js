@@ -67,7 +67,7 @@ export default function DoctorHome() {
     const [Country,setCountry] = useState('');
     const [Speciality,setSpeciality]=useState('');
     const [image,setimage]=useState('');
-
+    
 
         let user={};
     function getUserDetails() {

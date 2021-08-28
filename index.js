@@ -39,6 +39,28 @@ app.get("/", (req, res) => {
     console.log("Hello MERN Soldier");
 });
 
+
+app.post("/createChecklist",(req,res) => {
+
+    var title = req.body.title;
+    var type = req.body.type;
+    var description = req.body.description;
+    var image = req.body.image;
+    
+   
+
+     session.run ('CREATE(n:Checklist {title:$titleParam,type:$typeParam,description:$descriptionParam,image:$imageParam}) RETURN n',{titleParam:title,typeParam:type,descriptionParam:description,imageParam:image})
+            .then(function(result){
+                console.log("it works")
+                res.status(201).json({result});
+                
+            })
+            .catch(function(err){
+                console.log(err)
+            });
+})
+
+
 app.post("/createQuestion",(req,res) => {
 
     var question = req.body.question;
@@ -59,16 +81,18 @@ app.post("/createQuestion",(req,res) => {
             });
 })
 
+
 app.post("/createResult",(req,res) => {
 
     var title = req.body.title;
     var description = req.body.description;
     var image = req.body.image;
     var num = req.body.num;
+    var name = req.body.name;
     var ChecklistTitle = req.body.ChecklistTitle
    
 
-     session.run ('CREATE(n:Result {title:$titleParam,description:$descriptionParam,image:$imageParam,num:$numParam,ChecklistTitle:$ChecklistTitleParam}) RETURN n',{titleParam:title,descriptionParam:description,imageParam:image,numParam:num,ChecklistTitleParam:ChecklistTitle})
+     session.run ('CREATE(n:Result {title:$titleParam,description:$descriptionParam,image:$imageParam,num:$numParam,ChecklistTitle:$ChecklistTitleParam,name:$nameParam}) RETURN n',{nameParam:name,titleParam:title,descriptionParam:description,imageParam:image,numParam:num,ChecklistTitleParam:ChecklistTitle})
             .then(function(result){
                 console.log("it works")
                 res.status(201).json({result});

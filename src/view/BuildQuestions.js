@@ -107,7 +107,7 @@ export default function BuildQuestions() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [imagelink, setImagelink] = useState('');
-
+    const [Names,setNames] = useState([]);
 
 
     const handleChange = (e, index) => {
@@ -207,6 +207,7 @@ export default function BuildQuestions() {
             "description": description,
             "image": imagelink,
             "num": response.data.records.length+1,
+            "name": "R" +  (Number(response.data.records.length ) + 1),
             "ChecklistTitle":localStorage.getItem('Title'),
     })
     .then(function (response) {    
@@ -256,7 +257,7 @@ export default function BuildQuestions() {
        
         let list2 = [];
         let list1 = [];
-
+        let list3 = [];
         for (var i=0; i<=cont.length-1;i++){
             list2.push(cont[i]._fields[0].properties)
             
@@ -264,12 +265,19 @@ export default function BuildQuestions() {
        
         axios.get('http://localhost:8088/ShowResults').then(function (response){
             
-            let cont2 = response.data.records
+            let cont2 = response.data.records;
             for (var i=0; i<=cont2.length-1;i++){
                 list1.push(cont2[i]._fields[0].properties)
-                
             }
-
+            setResult(list1)
+            for (var j=0;j<=list2.length-1;j++){
+                list3.push(list2[j].name)
+            }
+            for (var l=0;l<=list1.length-1;l++){
+                list3.push(list1[l].name)
+            }
+            setNames(list3)
+             // Don't set the state out of an async call cause it will set it before data change
         })
         axios.get(apiURL)
         .then(function(response) {
@@ -296,14 +304,14 @@ export default function BuildQuestions() {
             
             
            
+
+
             
 
         })
         setAnswers(list2)
-        setAnswers2(list2)        
-        setResult(list1)
-        console.log(Result)
-       
+        setAnswers2(list2)
+               
     })
  }
     useEffect(() => {
@@ -474,11 +482,22 @@ export default function BuildQuestions() {
             </Container>
            
            
-            <Container style={{backgroundColor:'azure',marginTop:'3em',padding: '2em 15em',paddingBottom:'0em',borderRadius:'1em'}}>
+            <Container style={{backgroundColor:'azure',marginTop:'3em',paddingBottom:'1em',borderRadius:'1em'}}>
             <Row  >
                 
                 {Result.map((res, i) => {
-                return(<Col md={1} key={i}><h2 style={{fontFamily: 'Inria Sans',textAlign:'center',color: '#AAAAAA'}}>{res.description}</h2></Col>)
+                return(<Col md={4} key={i}><h2 style={{fontFamily: 'Inria Sans',textAlign:'center',color: '#AAAAAA'}}>{res.name}</h2>
+                    <div style={{background: "rgb(235, 235, 235)",fontFamily: "Inter",borderRadius: "0.5em",marginBottom:'1em'}}>
+                        <Row>
+                            <Col md={4}><img style={{width:"100px",borderRadius: "0.5em",heigh:"100px"}} src={res.image} alt=""></img></Col>  
+                            <Col md={6}>
+                                <h2 style={{margin: "auto",fontFamily: 'Inria Sans',fontSize: "1.5em",textAlign:'center',width: "max-content",marginTop: "0.3em"}}>{res.title}</h2> 
+                                <p style={{marginTop: "0.7em",fontFamily: 'Inria Sans',textAlign:'center',color: '#AAAAAA'}}>{res.description}</p>
+                            </Col>   
+                        </Row>                
+                    </div>
+                    </Col>
+                )
             })}
             </Row>
             </Container>  
@@ -492,7 +511,7 @@ export default function BuildQuestions() {
             <input type="text" value={answer.question} readonly="readonly" className={classes.input1} style={{width:'90%',height:'3.2em',marginLeft:'10%',borderRadius: '0.4em',marginBottom:'1.5em',border: '2em',outline: 'none',paddingLeft: '1.2em',fontFamily: 'Inter',maxWidth: '80%'}}></input>
             </div> {answer.answer.map((answer2, index) => {
             return(<Row><Col md={9}><input type="text" Key={index} className={classes.input1} value={answer2} readonly="readonly" style={{width:'80%',height:'3.2em',borderRadius: '0.4em',marginBottom:'1.5em',border: '2em',outline: 'none',paddingLeft: '1.2em',fontFamily: 'Inter',marginLeft:'20%'}}></input></Col>
-                <Col md={3}><Form.Control as="select"  onChange={e => handleChange2(e,index,answer.answer,answer.name)}  style={{background: 'rgb(235, 235, 235)',fontFamily: 'Inter',maxWidth: '4.6em',marginTop: '0.23em',height: '2.9em',outline: 'none' ,marginLeft: '-1.1em'}} > <option></option> {Answers.map((answer1, i) => {return answer.name !== answer1.name && answer1.visibile === "visible" ? <option Key={i} >{answer1.name}</option>:<h1>dssqd</h1>})}</Form.Control> <img alt="" src="check.png" style={{cursor: 'pointer',marginLeft: '40%',marginBottom: '1em',width: '3em',marginTop:'-50%',marginLeft:'50%'}} onClick={e =>showchoice(answer,Answers2,index)}/></Col></Row>
+                <Col md={3}><Form.Control as="select"  onChange={e => handleChange2(e,index,answer.answer,answer.name)}  style={{background: 'rgb(235, 235, 235)',fontFamily: 'Inter',maxWidth: '4.6em',marginTop: '0.23em',height: '2.9em',outline: 'none' ,marginLeft: '-1.1em'}} > <option></option> {Names.map((name, i) => {return answer.name!==name? <option Key={i} >{name}</option>: null})}</Form.Control> <img alt="" src="check.png" style={{cursor: 'pointer',marginLeft: '40%',marginBottom: '1em',width: '3em',marginTop:'-50%',marginLeft:'50%'}} onClick={e =>showchoice(answer,Answers2,index)}/></Col></Row>
              )})}
             
             </Col>)

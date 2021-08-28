@@ -10,6 +10,7 @@ import Container from 'react-bootstrap/Container'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChartBar,faFilter } from '@fortawesome/fontawesome-free-solid'
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
 
@@ -39,17 +40,29 @@ export default function Step1() {
     const [info,setInfo] = useState();
 
        
+    
     function sendinfo(){
         
         
-        
+    axios.post('http://localhost:8088/createChecklist',{
+            "title": title,
+            "type": type,
+            "description": description,
+            "image": image,
+            
+    })
+    .then(function (response) {    
+      
         localStorage.setItem("Title", title); 
-        localStorage.setItem("Type", type); 
-        localStorage.setItem("Description", description); 
-        localStorage.setItem("Image", image); 
-
-
         history.push("/Questions");
+      })
+      .catch(function (error) {
+        
+        console.log(error);                   
+        
+      });
+      
+        
         
         }
 
