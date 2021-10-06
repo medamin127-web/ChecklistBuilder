@@ -112,12 +112,12 @@ export default function DoctorHome() {
                           
                         </Col>
                         <Col md={7} key={user.id}>
-                        <h3 style={{fontFamily:'Indie Flower',paddingTop: '1em',paddingLeft: '2em',fontSize:'40px'}}>Dr. {name}</h3>
+                        <h3 style={{fontFamily:'Poppins',paddingTop: '1em',paddingLeft: '2em',fontSize:'40px'}}>Dr. {name}</h3>
                         <h4 style={{fontFamily: 'Nova Flat',color: 'white',textShadow: '0 0 3px black',paddingLeft: '2em',fontSize: '60px'}}>Info</h4>
                         <div style={{paddingLeft: '8em',paddingTop: '1em'}}>
-                            <h5 className={classes.h5}>Email : {Email}</h5>
-                            <h5 className={classes.h5}>Country : {Country}</h5>
-                            <h5 className={classes.h5}>Speciality: {Speciality}</h5>
+                            <h5 className={classes.h5} style={{fontFamily:'Poppins' , fontSize:'larger',color:"black"}}>Email : {Email}</h5>
+                            <h5 className={classes.h5}  style={{fontFamily:'Poppins' , fontSize:'larger',color:"black"}}>Country : {Country}</h5>
+                            <h5 className={classes.h5}  style={{fontFamily:'Poppins' , fontSize:'larger',color:"black"}}>Speciality: {Speciality}</h5>
                         </div>
                         <Link style={{textDecoration:'none'}} to="/Edit">
                             <Button variant="primary" type="submit" className={classes.button2}>Edit Profile</Button>
@@ -130,7 +130,7 @@ export default function DoctorHome() {
                     <Col md={10}>
                     <div style={{maxWidth: 'max-content',margin: 'auto'}}>
                     <h2 style={{fontFamily:'heroes legend',color:'white',float: 'right',marginTop: '2em',fontSize: '310%',textShadow: '-3px 4px 0px black'}}>See All Your Checklists</h2>
-                    <Link style={{textDecoration:'none'}} to="/Signup">
+                    <Link style={{textDecoration:'none'}} to="/ShowAll">
                         <Button variant="primary" type="submit" className={classes.button1} style={{padding: '3% 4%',marginLeft:'50%',width: '25%',height: '2.7em',fontSize:'2.5em'}}>Show</Button>
                     </Link>
                     </div>
@@ -144,12 +144,12 @@ export default function DoctorHome() {
             <div className={classes.div1} style={{backgroundColor:'#5bf0a6'}}>
                 <Row>
                     <Col md={3}>
-                        <img alt="" src="client.png" style={{width: '270px',paddingTop: '8em'}}></img>
+                        <img alt="" src="/client.png" style={{width: '270px',paddingTop: '8em'}}></img>
                     </Col>
                     <Col md={6}>
                         <div>
                             <h2 style={{fontFamily:'heroes legend',marginTop: '2em',fontSize: '290%',color: 'white',textShadow: '-3px 4px 0 black',wordSpacing: '0.06em',lineHeight: '1.4em',maxWidth: '700px',marginLeft:'auto'}}>Go Through All Users History</h2>
-                            <Link style={{textDecoration:'none'}} to="/Signup">
+                            <Link style={{textDecoration:'none'}} to="/History">
                             <Button variant="primary" type="submit" className={classes.button1} style={{padding: '3% 4%',width: '10em' ,height: '2.7em',fontSize:'2em'}}>Explore</Button>
                             </Link>
                         </div>

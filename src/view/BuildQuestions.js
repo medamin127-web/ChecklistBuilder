@@ -13,6 +13,31 @@ import { CustomInput } from 'reactstrap';
 import axios from "axios";
 import swal from 'sweetalert';
 import { useHistory } from "react-router-dom";
+import Modal from 'react-modal';
+
+
+
+const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      border:"none",
+      borderRadius:"2%"
+
+    },
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgb(74 64 64 / 75%)'
+      },
+  };
 
 
 const useStyles = makeStyles((theme) => ({
@@ -88,6 +113,26 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BuildQuestions() {
 
+    //Modal
+    let subtitle;
+    const [modalIsOpen, setIsOpen] = React.useState(false);
+
+    
+    function openModal() {
+        setIsOpen(true);
+      }
+    
+      function afterOpenModal() {
+        // references are now sync'd and can be accessed.
+        
+      }
+    
+      function closeModal() {
+        setIsOpen(false);
+      }
+
+
+
     const classes = useStyles();
     const history = useHistory(); 
 
@@ -108,7 +153,9 @@ export default function BuildQuestions() {
     const [description, setDescription] = useState('');
     const [imagelink, setImagelink] = useState('');
     const [Names,setNames] = useState([]);
-
+    const [totalRel,setTotalRel] = useState([]);
+    const [RelArray,setRelArray]= useState([]);
+    const [visibility,setVisibility] = useState();
 
     const handleChange = (e, index) => {
         const {name, value} = e.target;
@@ -119,27 +166,49 @@ export default function BuildQuestions() {
         setInputList(list);
     }
 
-        function handleChange2(e,index,answer,name){  
-         
-            let list2 = [];
+  
 
-         list2.push(e.target.value)
-        setChoice(list2[0]);
-          
-        //const list1 = [...total];
+    function addrel (e,index,answer,name)
+    {
+        let tot = total
+        let list2 = [];
 
-        let Rel = {
+        list2.push(e.target.value)
+       setChoice(list2[0]);
+        
+       
+        let rel = {
             name1:name,
             name2:list2[0],
             answer:answer[index]
-           
+        }
+
+        let confirm = false 
+        
+        for (var i = 0;i<=tot.length-1;i++)
+       {
+                if (rel.name1===tot[i].name1 && rel.answer===tot[i].answer)
+                {
+                    tot[i]=rel
+                    setTotal(tot)
+                    confirm=true
+                    break
+                }
+       }
+
+       console.log(confirm)
+        if (confirm===false)
+        {
+            let tot = total
+            tot.push(rel)
+            setTotal(tot)
+            console.log(total)
         }
         
-        list2.push(Rel)
-        setTotal(Rel)
-        addtwo()
-       
-      }
+
+    }
+        
+
 
     const handleAddInput = () =>{
         //setInputList([...inputList,{Answer:""}]);
@@ -161,7 +230,8 @@ export default function BuildQuestions() {
         for (var i=0;i<=inputList.length-1;i++){
             A1.push(inputList[i].Answer)
         }
-        axios.get('http://localhost:8088/ShowQuestions')
+        let Checklistid = localStorage.getItem('id')
+        axios.post('http://localhost:8088/ShowQuestions',{"Checklistid":Checklistid})
         .then(function (response) {    
            console.log('sucess')
            console.log(response.data.records)
@@ -171,7 +241,7 @@ export default function BuildQuestions() {
             "answer": A1,
             "name": "Q" +  (Number(response.data.records.length ) + 1),
             "num": response.data.records.length+1,
-            "ChecklistTitle":localStorage.getItem('Title'),
+            "Checklistid":localStorage.getItem('id'),
     })
     .then(function (response) {    
       
@@ -197,7 +267,8 @@ export default function BuildQuestions() {
     }
 
     function AddResult(){
-      axios.get('http://localhost:8088/ShowResults')
+        let Checklistid= localStorage.getItem('id')
+      axios.post('http://localhost:8088/ShowResults',{"Checklistid":Checklistid})
         .then(function (response) {    
            console.log('sucess')
            console.log(response.data.records)
@@ -208,7 +279,7 @@ export default function BuildQuestions() {
             "image": imagelink,
             "num": response.data.records.length+1,
             "name": "R" +  (Number(response.data.records.length ) + 1),
-            "ChecklistTitle":localStorage.getItem('Title'),
+            "Checklistid":localStorage.getItem('id'),
     })
     .then(function (response) {    
        
@@ -235,35 +306,39 @@ export default function BuildQuestions() {
     
     }
 
- function updatevisible()
-    {
-        let ver = false
-        for ( var m=0;m<=Answers2.length-1;m++)
-        {
-            if (Answers2[m].visibile)
-            {
-                console.log("hey")
-                ver = true
-            }
-        }
-        
-        setVerif(ver)
-    }   
+ 
  function addtwo(){
      let apiURL = "http://localhost:8088/Showme"
-    axios.get('http://localhost:8088/ShowQuestions')
+     
+     let Checklistid= localStorage.getItem('id')
+    axios.post('http://localhost:8088/ShowQuestions',{"Checklistid":Checklistid})
     .then(function (response) {    
+
         let cont = response.data.records
-       
+        
         let list2 = [];
         let list1 = [];
         let list3 = [];
+      
+      
+        console.log(cont)
         for (var i=0; i<=cont.length-1;i++){
-            list2.push(cont[i]._fields[0].properties)
+            
+            let obj = {
+                    'name':cont[i]._fields[0].properties.name,
+                    'question':cont[i]._fields[0].properties.question,
+                    'Checklistid':cont[i]._fields[0].properties.Checklistid,
+                    'answer':cont[i]._fields[0].properties.answer,
+                    'num':cont[i]._fields[0].properties.num,
+                    'id':cont[i]._fields[0].identity.low
+            }
+            list2.push(obj)
             
         }
-       
-        axios.get('http://localhost:8088/ShowResults').then(function (response){
+        
+     
+        
+        axios.post('http://localhost:8088/ShowResults',{"Checklistid":Checklistid}).then(function (response){
             
             let cont2 = response.data.records;
             for (var i=0; i<=cont2.length-1;i++){
@@ -311,6 +386,7 @@ export default function BuildQuestions() {
         })
         setAnswers(list2)
         setAnswers2(list2)
+        console.log(list2)
                
     })
  }
@@ -334,7 +410,7 @@ export default function BuildQuestions() {
        setImagelink('')
        
     }
-    function Checking(name){
+    function Checking(id){
         swal({
             title: "Are you sure?",
             text: "",
@@ -344,11 +420,12 @@ export default function BuildQuestions() {
           })
           .then((willDelete) => {
               
-              console.log(name)
-            let apiUrl = `http://localhost:8088/DeleteQuestion/${name}`;  
-            let indexOfArrayItem = Answers.findIndex(i => i.name === name);
+            
+          
+            let indexOfArrayItem = Answers.findIndex(i => i.id === id);
+            console.log(indexOfArrayItem)
             if (willDelete) {
-            axios.delete(apiUrl).then((result) => {
+            axios.post("http://localhost:8088/DeleteQuestion",{'id':id}).then((result) => {
                  Answers.splice(indexOfArrayItem, 1);
                 
               swal("Successful Deletion!", {
@@ -371,66 +448,51 @@ export default function BuildQuestions() {
         setShow(!show)
         setShow2(false)
     }
-    function showchoice(Answer1,Answer2,index){
+
+
+    function confirmAll(){
+
       
-        
-       
-            if (Answer1.name === total.name1  )
-            {    
-                 var rel = total
                 
-                 
-                 axios.post('http://localhost:8088/AddRelation',rel).then((result) => {
+                axios.post('http://localhost:8088/UpdateVisibility',{"title":Number(localStorage.getItem('id')),"visibility":visibility}).then((result) => {
+                    axios.post('http://localhost:8088/AddRelation2',{"total":total,"Checklistid":localStorage.getItem('id')}).then((result) => {
+
                     
-                 }).catch(function (error) {
-         
-                     console.log(error);                   
-                     
-                   });
- 
-            }
-        
- 
-        let Array2 = Answer2
-        for (var j=0;j<=Array2.length-1;j++)
-        {
-             for (var l=0;l<=total.length-1;l++)
-             {
- 
-                 if (Array2[j].name === total[l].name1 || Array2[j].name === total[l].name2 )
-                 {
-                    delete  Array2[j].visibile
-                 }
-             }
-        }
+                })
+                
+                history.push("/ShowAll");
+                
+            }).catch(function (error) {
+    
+                console.log(error);                   
+                
+              });
 
-        setAnswers2(Array2)
+
+              
         
-        updatevisible(); 
-        
-        
-        
-       
     }
-    function save(){
-        axios.post('http://localhost:8088/createChecklist',{
-            "title": localStorage.getItem('Title'),
-            "type": localStorage.getItem('Type'),
-            "description": localStorage.getItem('Description'),
-            "image": localStorage.getItem('Image')
-    }).then((result) => {
-        history.push("/Confirmation");
-    }).catch(function (error) {
 
-        console.log(error);                   
+  
+    function DeleteQuestion(){
+
+    }
+
+    function DeleteChecklist(){
+       
+        let  Checklistid = localStorage.getItem('id')
+        axios.post('http://localhost:8088/DeleteChecklist',{"Checklistid":Checklistid}).then((result) => {
         
-      });
+        history.push("/Step1");
 
+
+    } 
+        )
     }
     
   
     return (
-        <div>
+        <div style={{background:'rgb(182 230 202)'}}>
             <Grid  component="main" >
             <h2 style={{fontFamily: 'Righteous',textAlign:'center',color: '#AAAAAA',marginTop: '1em',background: 'aliceblue',padding: '1em'}}>Step 2 : Build The Questions</h2>
             <Container style={{backgroundColor:'azure',marginTop:'3em',padding: '2em 15em',paddingBottom:'0em',borderRadius:'1em'}}>
@@ -507,17 +569,47 @@ export default function BuildQuestions() {
             <Row>
             {Answers2.map((answer, i) => {
             return(<Col md={6} Key={i}> <h2 style={{fontFamily: 'Inria Sans',textAlign:'center',color: '#AAAAAA'}}>{answer.name}</h2> 
-            <div><FontAwesomeIcon icon={faTrash} style={{marginRight:'0.3em',fontSize: '2.5em', position: 'absolute',top:'1.2em',cursor: 'pointer'}} className={classes.font1} onClick={e => Checking(answer.name)}/>
+            <div><FontAwesomeIcon icon={faTrash} style={{marginRight:'0.3em',fontSize: '2.5em', position: 'absolute',top:'1.2em',cursor: 'pointer'}} className={classes.font1} onClick={e => Checking(answer.id)}/>
             <input type="text" value={answer.question} readonly="readonly" className={classes.input1} style={{width:'90%',height:'3.2em',marginLeft:'10%',borderRadius: '0.4em',marginBottom:'1.5em',border: '2em',outline: 'none',paddingLeft: '1.2em',fontFamily: 'Inter',maxWidth: '80%'}}></input>
             </div> {answer.answer.map((answer2, index) => {
             return(<Row><Col md={9}><input type="text" Key={index} className={classes.input1} value={answer2} readonly="readonly" style={{width:'80%',height:'3.2em',borderRadius: '0.4em',marginBottom:'1.5em',border: '2em',outline: 'none',paddingLeft: '1.2em',fontFamily: 'Inter',marginLeft:'20%'}}></input></Col>
-                <Col md={3}><Form.Control as="select"  onChange={e => handleChange2(e,index,answer.answer,answer.name)}  style={{background: 'rgb(235, 235, 235)',fontFamily: 'Inter',maxWidth: '4.6em',marginTop: '0.23em',height: '2.9em',outline: 'none' ,marginLeft: '-1.1em'}} > <option></option> {Names.map((name, i) => {return answer.name!==name? <option Key={i} >{name}</option>: null})}</Form.Control> <img alt="" src="check.png" style={{cursor: 'pointer',marginLeft: '40%',marginBottom: '1em',width: '3em',marginTop:'-50%',marginLeft:'50%'}} onClick={e =>showchoice(answer,Answers2,index)}/></Col></Row>
+                <Col md={3}><Form.Control as="select"  onChange={e => addrel(e,index,answer.answer,answer.name)}  style={{background: 'rgb(235, 235, 235)',fontFamily: 'Inter',maxWidth: '4.6em',marginTop: '0.23em',height: '2.9em',outline: 'none' ,marginLeft: '-1.1em'}} > <option></option> {Names.map((name, i) => {return answer.name!==name? <option Key={i} >{name}</option>: null})}</Form.Control> </Col></Row>
              )})}
             
             </Col>)
              })}          
              </Row>
-             <Row className="justify-content-md-center" ><Col md={6}> <Button variant="primary" type="submit"  style={{marginBottom:'2em'}} className={classes.button2} onClick={save}>Save</Button></Col></Row>
+             <Row className="justify-content-md-center" ><Col md={6}> <Button variant="primary" type="submit"  style={{marginBottom:'2em'}} className={classes.button2} onClick={openModal} >Save</Button></Col></Row>
+      <Modal
+        isOpen={modalIsOpen}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+        
+      >
+        <Container style={{backgroundColor:'white',padding: '4em 5em',paddingBottom:'0em',maxWidth: 'max-content'}}>
+        <h2 style={{fontFamily: 'Inria Sans',textAlign:'center',color: '#AAAAAA'}}>Step 3 : Confirm</h2>
+        <Row className="justify-content-md-center" style={{marginTop:'1.5em'}}>
+                        <Col md={6} >
+                            <Form.Control as="select"   value={visibility} onChange={(e) =>setVisibility(e.target.value)} style={{width:'8em',backgroundColor:"rgb(235, 235, 235)",borderRadius: '7px', fontFamily: 'Carter One',fontSize: '1em',height: '2.7em'}}>
+                            <option selected="true" disabled="disabled"  >Visibility</option>
+                            <option>Private</option>
+                            <option>Public</option>
+                            <option>Unfinished</option>
+                            </Form.Control>
+                        </Col>
+            </Row>
+            <Row className="justify-content-md-center" style={{marginRight: "1em"}}>
+                <Col md={3}><Button className={classes.button2} style={{border:"0",background:"#d85252",fontFamily: 'Righteous',padding: '1em 1em',fontSize: '1.2em'}} onClick={closeModal}>Close</Button></Col>
+                <Col md={8} ><Button variant="primary" type="submit"  style={{border:"0",background:"rgb(58 183 90)",fontFamily:"Carter One",padding: "1em 1em",fontSize: '1.2em'}} className={classes.button2} onClick={confirmAll} >Confirm</Button></Col>
+            </Row>
+           
+            <p style={{fontFamily: 'Inria Sans',textAlign:'center',color: '#AAAAAA',marginTop: "3em"}}>Do you want to delete the checklist?</p>
+            <FontAwesomeIcon icon={faTrash} style={{fontSize: '2.5em',cursor: 'pointer',marginLeft: "45%"}} className={classes.font1}  onClick={DeleteChecklist} />    
+        </Container>
+        
+      </Modal>
             </div>
             </Grid>
         </div>

@@ -5,10 +5,11 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const User = require("../Model/User");
-
+const { v4: uuidv4 } = require('uuid');
+let path = require('path');
 const userController = require("../controller/userController");
 
-const DIR = './uploads/';
+const DIR = './images/';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -33,6 +34,8 @@ var upload = multer({
 });
 
 
+
+
 router.post("/register", async(req, res) => {
 
     
@@ -42,9 +45,10 @@ router.post("/register", async(req, res) => {
             name: req.body.name,
             Email: req.body.email,
             password: req.body.password,
-            Country: req.body.country,
+            State: req.body.State,
             Speciality: req.body.Speciality,
-            image: req.body.image
+            image: 'https://www.debiteuren365.nl/wp-content/uploads/unknown-profile-icon-debiteuren365.png'
+            
         });
         let data = await user.save();
         const token = await user.generateAuthToken(); // here it is calling the method that we created in the model
@@ -74,24 +78,76 @@ router.post("/Password",async(req,res)=> {
             
             })
 
-router.post("/ImageUpdate",upload.array('files', 10),async(req, res) => { 
+   
+router.route("/UploadImage").post(upload.single('image'),async(req, res, next) => {
+              try {
+                  
+                  const url = req.protocol + '://' + req.get('host')
+                  let picture = url + '/images/' + req.file.filename
+                  
+              
+             
+                  res.status(201).json({picture });
+                   } catch (err) {
+                     res.status(400).json({ err: err });
+                     console.log(err)
+                   }
+                             })   
 
-    try{
-        const reqFiles = []
-        const url = req.protocol + '://' + req.get('host')
-            for (var i = 0; i < req.files.length; i++) {
-            reqFiles.push(url + '/uploads/' + req.files[i].filename)
-            }
+router.route("/ImageUpdate").post(upload.single('image'),async(req, res, next) => {
+  try {
+      
+      const image = req.body.files
+      const url = req.protocol + '://' + req.get('host')
+      let picture = url + '/images/' + image
+      
+      const update =  await User.updateOne({_id:req.body.id},{$set: {image:picture}});
+ 
+      res.status(201).json({update });
+       } catch (err) {
+         res.status(400).json({ err: err });
+         console.log(err)
+       }
+                 })   
+             
+      
+                
+router.route('/add').post(upload.single('image'), (req, res) => {
+                  
+                  const image = req.file.filename
+                  
+                  const newUserData = {
+                     
+                      image
+                  }
+              
+                  const newUser = new User(newUserData);
+              
+                  newUser.save()
+                         .then(() => res.json('User Added'))
+                         .catch(err => res.status(400).json('Error: ' + err));
+              });
 
-            const update = await User.updateOne({_id:req.body._id},{$set: { files:reqFiles}})
-            res.status(201).json({ update });
-        }catch(err){
-            res.status(400).json({ err: err });
-        }
+  router.post("/Findname",async(req,res)=> {
+          User.find(req.body,(error, data) => {
+          if (error) {
+            res.json({msg:'Invalid'})
+          } else {
+            res.json(data)
+          }
+         })
+       })
 
-        })  
-          
-        
+       router.post("/FindDoctorById",async(req,res)=> {
+    
+        User.findById(req.body.id,(err, data) => {
+          if (err) {
+            res.json({msg:'Invalid'})
+          } else {
+            res.json(data)
+          }
+         })
+      })
 router.post("/login", userController.loginUser);
 router.get("/me", auth, userController.getUserDetails);
 

@@ -6,13 +6,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Form from 'react-bootstrap/Form'
 import Button from "@material-ui/core/Button"
 import Container from 'react-bootstrap/Container'
-import { faPlus , faTrash,faCheck} from '@fortawesome/fontawesome-free-solid'
+import { faPlus , faTrash,faCheck,faUserMd} from '@fortawesome/fontawesome-free-solid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Input } from '@material-ui/core';
 import { CustomInput } from 'reactstrap';
 import axios from "axios";
 import swal from 'sweetalert';
 import { useHistory } from "react-router-dom";
+import { ContactSupportOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -91,90 +92,63 @@ export default function Results() {
 
     const classes = useStyles();
     const history = useHistory();
-    const[Answers2,setAnswers2] = useState([])
-    const [Answers,setAnswers] = useState([])
-    const [results,setResults] = useState([])
+ 
+    const [result,setResult] = useState([])
+    const [doctor,setDoctor] = useState([])
 
-    function addtwo(){
-    
-        let apiURL = "http://localhost:8088/ShowRelation"
-       axios.get(apiURL)
-       .then(function (response) {    
-            
-           console.log(response)
-            let cont = response.data.result.records
-            let Results = []
-            
+    function ShowResult(){
         
-            for (var i=0; i<=cont.length-1;i++){
-
-                let object1 = {
-                            "nameA":cont[i]._fields[0],
-                            "OGQt":cont[i]._fields[0],
-                            "rel_answer":cont[i]._fields[1],
-                            "QuestionB":cont[i]._fields[2],
-                            "nameB":cont[i]._fields[3]
-                }
-                Results.push(object1)
-
-               
-            }
-
-            var grouped = _.mapValues(_.groupBy(Results, 'nameA'),
-            clist => clist.map(result=> _.omit(result, 'nameA')));
-
-
-            
-            let Array4 = []
-         for ( var result in grouped ){
-             Array4.push(grouped[result])
-             
-             
-         }
-         console.log(Array4)
-         setResults(Array4)
-               
-
-            /*for (var result in results) {
-                console.log(result);
-              }*/
-           }
-           ).catch(function (error) {
+        let Resultid = localStorage.getItem("Resultid")
         
-            console.log(error);                   
-            
-          });
+        axios.post("http://localhost:8088/ShowResult" , {"Checklistid":localStorage.getItem("id"),"Resultid":Number(Resultid)}).then(function(reponse){
+          let res = reponse.data.records[0]._fields[0].properties
+          setResult(res)
+            console.log(res)
+
+            axios.post('http://localhost:8088/user/Findname',{"name":localStorage.getItem("DoctorName")}).then(function (response) {
+                let connt = response.data[0]
+                setDoctor(connt)
+                })
+        })
+
 
        }
-    
+
+
        useEffect(() => {
-           addtwo();
+           ShowResult();
            
           
        },[]);
        
     return (
-        <div>
-              <Row className="justify-content-md-center" >
-              <Container>
-              
-                
-              <Col md={12} style={{textAlign: 'center'}}><h2>Q1</h2></Col>
-                    {results.map((result, i) => {
-                        return (
-                        <Row className="justify-content-md-center" >
-                            {result.map((result2, ii) => {
+        <div style={{background: 'aliceblue'}}>
+            
+              <Container style={{padding: '4em',maxWidth: '90em'}}>
+                <div style={{background:'rgb(15, 139, 184)',padding: '3em',display: 'flex',borderRadius: '15px',webkitBoxShadow: '0 4px 60px rgb(0 0 0 / 30%)'}}>
+                    <img src={result.image} alt="" style={{width:'20em',height:'15em',borderRadius: '1em'}}/>
+                    <div style={{marginLeft: '3em'}}>
+                    <h2 style={{fontFamily: 'Poppins',marginBottom: '0.9em',color:'white'}}>{result.title}</h2>
+                    <h5 style={{fontFamily: 'Kalam',color: 'white'}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h5>
+                </div>
+                </div>
+                <div style={{padding: '3em',borderRadius: '15px'}}>
+                <div style={{display: 'flex'}}>
+                <FontAwesomeIcon icon={faUserMd} style={{fontSize: "4em",color: 'rgb(15, 139, 184)'}} />
+                <Col md={12} style={{marginTop: 'auto'}}><h2 >Contact Doctor</h2></Col>
+                </div>
+                <div style={{display: 'flex',paddingLeft: '3em'}}>
+                <img src="https://clinicalnotebook.com/wp-content/uploads/2015/04/Doctor-Profile-Pic-Example.png" style={{width: '9em',height:'10em',marginTop: '2em',borderRadius: '50%'}} alt=""></img>
+                <div style={{marginTop: '2.5em',marginLeft: '2em'}}>
+                    <h3>{doctor.name}</h3>
+                    <h6 style={{fontFamily: 'Kalam',color: 'grey',fontSize: '1.2em'}}>Sousse</h6>
+                    <button type='button' style={{fontFamily: 'Poppins',border: 'none',padding: '0.6em 2.1em',background:'rgb(15, 139, 184)',color: 'white',borderRadius: '2em',fontSize:'1.3em',marginTop: '0.5em'}}>Contact</button>
+                </div>
+                </div>
+              </div>
+              </Container>
 
-                               return <div>
-                                   <Col md={12} style={{textAlign: 'center'}}><h2>{result2.rel_answer}</h2></Col>
-                                    <Col md={12} style={{textAlign: 'center'}}><h2>{result2.nameB}</h2></Col>
-                                    <Col md={12} style={{textAlign: 'center'}}><h2>{result2.QuestionB}</h2></Col></div>
-                            })}  
-                        </Row>)
-                        
-                    })}  
-                </Container>
-              </Row>
+              
         </div>
     )
 }

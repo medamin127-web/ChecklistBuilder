@@ -4,8 +4,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Julee&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inika&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
- @font-face { fontFamily: 'Heroes Legend'; src: url('https://dl.dafont.com/dl/?f=heroes_legend'); } 
- @font-face { fontFamily: 'Komika Axis'; src: url('https://dl.dafont.com/dl/?f=komika_axis'); } 
  @import url('https://fonts.googleapis.com/css2?family=Krona+One&family=Poppins:wght@500&display=swap');
  @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
@@ -21,7 +19,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+@import "../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-buttons/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-inputs/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-popups/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-react-calendars/styles/material.css";
 
+* { 
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background: white;
+  zoom: 80%
+}
+html, body, #root, .App {
+  height: 100%;
+}
 .App {
   text-align: center;
 }
@@ -31,6 +48,9 @@
   pointer-events: none;
 }
 
+.MuiButton-label{
+      font-family:Poppins;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -57,6 +77,8 @@
 .App-link {
   color: #61dafb;
 }
+
+
 
 @keyframes App-logo-spin {
   from {

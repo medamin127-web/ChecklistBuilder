@@ -8,13 +8,14 @@ const userSchema = new Schema({
     name: String,
     Email: String,
     password: String,
-    Country: String,
+    State: String,
     Speciality: {
         type: String,
     },
     image: {
         type: String
     },
+  
     tokens: [
         {
           token: {
@@ -23,9 +24,7 @@ const userSchema = new Schema({
           }
         }
           ],
-    files: {
-        type: Array
-        },
+        
 });
 
 //this method will hash the password before saving the user model

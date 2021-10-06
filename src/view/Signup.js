@@ -28,16 +28,15 @@ import swal from 'sweetalert';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    
-    backgroundImage:"url('/image1.png')",
+    backgroundColor:"white",
+   
     //backgroundColorheight: '100%',
-    height: "100vh",
-    backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: 'cover',
+  
+  
     //backgroundColor: "#f9d802",
     
   },
+
   image: {
     backgroundImage: "url(https://source.unsplash.com/random)",
     backgroundRepeat: "no-repeat",
@@ -97,9 +96,9 @@ const useStyles = makeStyles((theme) => ({
  
   form:{
     backgroundColor:'white',
-    margin: '11em',
+   
     
-    height: '70%',
+  
   },
   h2: {
    fontFamily: 'Kalam',
@@ -136,7 +135,7 @@ export default function SignInSide() {
     const [Password, setPassword] = useState('');
 
     async function Verify(){
-      document.getElementById("warning").style.visiblity = "visible";
+      
         axios.post('http://localhost:8088/user/login', {
         "email": Email,
         "password": Password
@@ -167,8 +166,10 @@ export default function SignInSide() {
       
     }
   return (
-    <Grid container component="main" className={classes.root}>
-      
+    <Grid container component="main"  >
+ 
+      <div style={{display: 'flex',flexDirection: 'row',margin: 'auto',marginTop: '5em',padding: '3em',webkitBoxShadow: '0 4px 60px rgb(0 0 0 / 50%)'}}>
+      <img src="female.jpg" alt="" style={{maxWidth: '40em',height: '40em'}}></img>
       <Form className={classes.form} onSubmit={formPreventDefault}>
       <h2 className={classes.h2}>Doctor Login</h2>
       <div className={classes.input1withicon}>
@@ -179,12 +180,13 @@ export default function SignInSide() {
       <Form.Control type="password" placeholder="Password" value={Password} onChange={(e) =>setPassword(e.target.value)} className={classes.input1} />
       <FontAwesomeIcon icon={faLock} className={classes.font1}/>
       </div>
-      <div id="warning" style={{marginBottom: '-1em',visibility:'hidden'}}><h6 id="h6"  style={{color:"#c32323",marginLeft:'3em'}}>Login Invalid! Try Again</h6></div>
-       <Button variant="primary" type="submit" className={classes.button1} onClick={Verify}>
+     
+       <Button variant="primary" type="submit" className={classes.button1} style={{fontFamily: 'Poppins',fontSize: '21px'}} onClick={Verify}>
     Login
   </Button>
+    <h4 style={{textAlign: 'center',marginTop: '2em',color: 'grey',fontSize: '1.1em',fontFamily: 'Poppins'}}>Forgot Password?</h4>
       </Form>
-      
+      </div>
     </Grid>
     
   );

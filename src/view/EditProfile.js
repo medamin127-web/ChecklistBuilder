@@ -10,13 +10,12 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { useHistory } from "react-router-dom";
 import swal from 'sweetalert';
-
+import {Helmet} from "react-helmet";
 
 const useStyles = makeStyles((theme) => ({
 
     root:{
-        height: '100vh',
-        minHeight : '100vh',
+       
         backgroundColor:'#C1F0D1'
     },
 
@@ -61,65 +60,46 @@ const useStyles = makeStyles((theme) => ({
 export default function EditProfile()  {
         const classes = useStyles();
         const history = useHistory(); 
-        const [name, setname] = useState('');
-        const [Email,setEmail]=useState('');
-        const [Country,setCountry] = useState('');
+        const [name, setname] = useState();
+        const [Email,setEmail]=useState();
+        const [Country,setCountry] = useState();
         const [Speciality,setSpeciality]=useState('');
-        const [image,setimage]=useState('');
-        const [OldPassword, setOldPassword] = useState('');
-        const [NewPassword, setNewPassword] = useState('');
-        const [_id,setid] = useState('');
-        const [file,setfile] = useState('');
-        const [selectedFile, setSelectedFile] = useState(null);
-
-
+        const [image,setimage]=useState();
+        const [OldPassword, setOldPassword] = useState();
+        const [NewPassword, setNewPassword] = useState();
+        const [id,setid] = useState();
+        const [files,setfiles] = useState();
+        const [imagesArray,setImagesArray] = useState();
+        const [length,setLength] = useState()
+        const [views,setViews] = useState()
         
-         const fileSelectedHandler = event => {
-           setSelectedFile({selectedFile:event.target.files})
-           console.log(selectedFile)
+         
+     function uploadFiles (event) {
+         let file = event.target.files[0]
+        setfiles(event.target.files[0])
 
-        }
+        const formData = new FormData();
 
-        function display(){
-            const fd = new FormData();
+        formData.append('image', file);
+
+        axios.post('http://localhost:8088/user/UploadImage',formData).then(function (response) {    
+            console.log(response);
             
-            for (const i of Object.keys(selectedFile)) {
-                fd.append('files', selectedFile[i])
-              }
-              console.log(fd)
+        })
         }
-        function UpdateImage(){
-            const fd = new FormData();
-            fd.append('image',selectedFile);
-            axios.post('http://localhost:8088/user/ImageUpdate',{
-                "_id":_id,
-                fd
-            }).then(res => {console.log(res)}).catch(function (error) {
+
+
+      function onUpload(){
+          
         
-                console.log(error);                   
-                
-              });
+        axios.post('http://localhost:8088/user/ImageUpdate',{"id": id,"files":files.name}).then(function (response) {    
+            console.log(response);
+            
+        })
+        
     }
 
-        let user={};
-    function getUserDetails() {
-        let token = localStorage.getItem("jwt");
-        var decoded = jwt_decode(token);
-        user = decoded;
-        console.log(user)
-        setname(user.name);
-        setEmail(user.email);
-        setCountry(user.country);
-        setSpeciality(user.speciality);
-        setimage(user.image);
-        setid(user._id);
-      };
-
-      useEffect(() => {
-        getUserDetails();
-            
-       
-    });
+     
     function formPreventDefault(e) {
  
         e.preventDefault();
@@ -152,33 +132,75 @@ export default function EditProfile()  {
         
       });
     }
-  
     
- 
+    function ShowAll()
+    {
+        let user={};
+        let token = localStorage.getItem("jwt");
+            var decoded = jwt_decode(token);
+            user = decoded;
+            setname(user.name);
+            setEmail(user.email);
+            setCountry(user.country);
+            setSpeciality(user.speciality);
+            setid(user._id)
+            let id = user._id
+
+            axios.post('http://localhost:8088/user/FindDoctorById',{'id':id}).then(function (response) {
+            
+            setimage(response.data.image)
+            console.log(response.data.image)
+            })
+            axios.post('http://localhost:8088/ShowChecklists',{'Doctorname':user.name}).then(function (response) {
+                
+                let res = response.data.result.records.length
+                 let connt = response.data.result.records
+                setLength(res)
+                let totalViews = 0
+
+                for (var i=0;i<=connt.length-1;i++)
+                {
+                    totalViews+=Number(connt[i]._fields[0].properties.views)
+                    
+
+                    
+                }
+                setViews(totalViews)
+                })
+    }   
+    
+    useEffect(() => {
+        ShowAll()
+            
+       
+    });
         return (
             <div>
                 <Grid  component="main" className={classes.root}>
-                <div container style={{marginLeft: '30%' ,maxWidth: 'fit-content',background: 'aliceblue',marginTop:'3em',paddingBottom:'1em',borderRadius:'11px'}}>
+                <Helmet>
+                <style>{'body { background-color: #C1F0D1; }'}</style>
+                </Helmet>
+                <div container style={{maxWidth: 'fit-content',background: 'aliceblue',paddingBottom:'1em',borderRadius:'11px',margin: 'auto',marginTop: '2em'}}>
                     <Row className="justify-content-md-center"  >
                             <Col md='auto' style={{padding: '3em 10em'}}>  
-                                <h2 style={{fontFamily:'Krona One'}}>Dr. {name}</h2>
-                                <h4 style={{textAlign:'center',color: 'grey'}}>{Speciality}</h4>
+                                <h2 style={{fontFamily:'Poppins'}}>Dr. {name}</h2>
+                                <h4 style={{textAlign:'center',color: 'grey',fontFamily:'Cairo'}}>{Speciality}</h4>
                             </Col> 
                         </Row> 
                             <Row>
-                                <Col  ><h5 style={{float: 'right' , fontFamily:'Krona One'}}><span style={{color:'grey'}}>0</span> Checklists</h5></Col> 
-                                <Col ><h5 style={{fontFamily:'Krona One'}}> <span style={{color:'grey'}}> 0 </span>Total Vues</h5></Col>
+                                <Col  ><h5 style={{float: 'right' , fontFamily:'Krona One'}}><span style={{color:'grey'}}>{length}</span> Checklists</h5></Col> 
+                                <Col ><h5 style={{fontFamily:'Krona One'}}> <span style={{color:'grey'}}>{views} </span>Total Vues</h5></Col>
                             </Row>
                                 
                               
                     </div>
                     <Row className="justify-content-md-center" style={{paddingTop: '2em'}}>
-                        <Col md="7" style={{marginTop:'3em',background: 'aliceblue',padding: '5.2em',}}>
+                        <Col md="7" style={{marginTop:'3em',background: 'aliceblue',padding: '5.2em',marginBottom: '5em'}}>
                          <Row>
-                         <Col md={6}> <img alt="" src="doctor3.jpg" style={{borderRadius: '50%'}} /> 
+                         <Col md={6}> <img alt="" src='images/101604992_3000354460078781_4003543663203319808_n.jpg' style={{borderRadius: '50%',width: '18em',height: '18em'}} /> 
                           <Row><Col >
-                          <Form.Control type="file" style={{marginTop:"0.7em"}} onChange={fileSelectedHandler} multiple />
-                          <Button className={classes.button1} style={{fontSize:'1.1em',borderRadius: '50px',marginLeft: '2em'}} onClick={UpdateImage} >Change Image</Button>
+                          <Form.Control style={{marginTop:"0.7em"}} onChange={uploadFiles } type="file" accept=".png, .jpg, .jpeg" name="photo"/>
+                          <Button className={classes.button1} style={{fontSize:'1.1em',borderRadius: '50px',marginLeft: '2em'}}  encType='multipart/form-data' onClick={onUpload} >Change Image</Button>
                           </Col>
                           </Row>
                          </Col>

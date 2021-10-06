@@ -19,6 +19,13 @@ import Home from "./view/Home";
 import BuildQuestions from "./view/BuildQuestions";
 import Confirmation from "./view/Confirmation";
 import Results from "./view/Results";
+import EditChecklist from "./view/EditChecklist";
+import ShowAll from "./view/ShowAll";
+import Checklists from './view/Checklists';
+import Checklist from './view/Checklist'
+import DoctorProfile from './view/DoctorProfile';
+import About from './view/About';
+
 
 
 export default function App() {
@@ -28,7 +35,7 @@ export default function App() {
     <Router>
     
      
-      <div style={{backgroundColor:'#C1F0D1'}}>
+      
         <Switch>
           <Route path="/Signup">
             <Signup />
@@ -39,7 +46,39 @@ export default function App() {
           <Home />
           <UserFooter />
           </Route>
-          
+
+
+          <Route path="/Checklists">
+              <Navbar />
+              <Checklists/>
+              <UserFooter />
+          </Route>
+
+          <Route path="/Checklist">
+              <Navbar />
+              <Checklist/>
+              <UserFooter />
+          </Route>
+
+          <Route path="/Results">
+            <Navbar />
+            <Results />
+            <UserFooter />
+          </Route>
+       
+
+          <Route path="/DrProfile">
+              <Navbar />
+              <DoctorProfile/>
+              <UserFooter />
+          </Route>
+
+          <Route path="/About">
+          <Navbar />
+          <About />
+          <UserFooter />
+          </Route>
+
           <Route path="/DoctorHome">           
           <Navbard />
           <DoctorHome />
@@ -58,6 +97,13 @@ export default function App() {
             <Footer1 />
           </Route>
 
+
+          <Route path="/ShowAll">
+            <Navbard />
+            <ShowAll />
+            <Footer1 />
+          </Route>
+          
           <Route path="/Step1">
             <Navbard />
             <Step1 />
@@ -70,11 +116,13 @@ export default function App() {
             <Footer1 />
           </Route>
 
-          <Route path="/Results">
+          <Route path="/EditChecklist">
             <Navbard />
-            <Results />
+            <EditChecklist />
             <Footer1 />
           </Route>
+
+         
 
 
           <Route path="/Confirmation">
@@ -93,7 +141,7 @@ export default function App() {
           
         </Switch>
         
-      </div>
+
       
     </Router>
     

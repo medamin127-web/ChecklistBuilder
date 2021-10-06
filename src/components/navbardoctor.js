@@ -6,13 +6,23 @@ import { Link } from 'react-router-dom'
 import Form from 'react-bootstrap/Form'
 import Select from "react-select"
 import { useHistory } from "react-router-dom";
-
+import {Navbar,Nav} from 'react-bootstrap';
+import Dropdown from 'react-bootstrap/Dropdown'
 
 
 function shoot() {
   alert("Great Shot!");
 }
 
+const customStyles = {
+  indicatorsContainer: () => ({
+    '.myDropDown': {
+      '&__dropdown-indicator': {
+        color: 'red' // <--- Color of your choice
+      }
+    }
+  })
+};
 
 const useStyles = makeStyles((theme) => ({
 
@@ -34,6 +44,15 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: '15px',
         
     },
+    input2:{
+      background: 'white',
+
+      '&:focus' :{
+          borderColor: '#ced4da',
+          boxShadow: 'none',
+          outline: 'none'
+        },
+  },
     img1:{
     width: '35px',
     height: '35px',
@@ -140,30 +159,51 @@ export default function DoctorHome() {
       history.push("/Signup");
     }
         return (
-            
-               <Grid container component="main" className={classes.root}>
-               <Link to="/DoctorHome"><img alt="" src="/Logo.png" className={classes.img3}></img></Link>
-               <h2 className={classes.h22}>Site Name </h2>
-               <div className={classes.div1}>
-                <Link to="/DoctorHome" className={classes.link2}>Home</Link>
-                <Link to="/about" className={classes.link2}>Build Checklist</Link>
-                <Link to="/about" className={classes.link2}>Category</Link>
-                <img alt="" src="/drop.png" className={classes.img2} onClick={shoot}></img>
-                <Link to="/History" className={classes.link2}>History</Link>
+          
+          <div> 
+              <Navbar collapseOnSelect expand="lg" style={{backgroundColor:'#91D5AD',height:'68px'}} variant="dark">
+              <Nav className="mr-auto">
+                <Nav.Item style={{marginTop: '1em'}}> 
+                <Link to="/DoctorHome" style={{textDecoration: 'none'}}><h3 style={{color:'white',fontFamily:'Poppins',marginBottom: '0.4em'}}>Symptom Checker</h3></Link>
+                </Nav.Item>
+                </Nav>
+
+                <Nav className="mr-auto">
                 
-               </div>
-                <Link to="/home" >
-                  <img alt="" src="/search.png" className={classes.search}></img>
-               </Link>
-                <Form.Control type="text" placeholder="Search..." className={classes.input1}/>
-               <Link to="/about" className={classes.link1}>Advanced Search</Link>
-               
-               <h3 className={classes.h33}>Welcome Back, Doc!</h3>
-               <img alt="" src="bell.png" className={classes.img1}></img>
-               
-                  <Button variant="primary" type="submit" className={classes.button1} onClick={logUserOut}>Logout</Button> 
+                    <Nav.Item style={{marginRight:'1.2em'}}><Link  to="/DoctorHome"  style={{textDecoration:'none'}}><h3 style={{fontWeight: '800',color:'#080808',fontFamily:'Poppins',marginTop: '0.6em',fontSize: '1.5em'}}>Home</h3></Link> </Nav.Item>
+                    <Nav.Item style={{marginRight:'1.2em'}}><Link  to="/Step1" style={{textDecoration:'none'}}><h3 style={{color:'white',fontFamily:'Poppins',marginTop: '0.6em',fontSize: '1.5em'}}>Build Checklist</h3></Link></Nav.Item>
+                    <Nav.Item style={{marginRight:'1.2em'}}>
+                        <Dropdown style={{display:'box',marginTop: '0.7em'}} styles={customStyles}>
+                            <Dropdown.Toggle   classNamePrefix='myDropDown'  as={Link} className={classes.link} styles={customStyles}  style={{textDecoration:'none',color:'white',fontFamily:'Poppins',fontSize:'1.5em',Color:'#B3FFFB',marginTop: '0.6em'}} variant="success" id="dropdown-basic">
+                                Checklists
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item href="#/action-1">Public</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2">Private</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">On Going</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        </Nav.Item>
+                        <Nav.Item style={{marginRight:'1.2em'}}><Link to="/History" style={{textDecoration:'none'}}><h3 style={{color:'white',fontFamily:'Poppins',marginTop: '0.6em',fontSize: '1.5em'}}>History</h3></Link></Nav.Item>
+                        <Nav.Item style={{marginRight:'1.2em'}}><Link to="/Edit" style={{textDecoration:'none'}}><h3 style={{color:'white',fontFamily:'Poppins',marginTop: '0.6em',fontSize: '1.5em'}}>Edit Profile</h3></Link></Nav.Item>
                 
-               </Grid> 
+                </Nav>
+               <div style={{display: 'flex',flexDirection: 'row',marginBottom: '0.5em'}}>
+                  <Link to="/home" >
+                    <img alt="" src="/search.png" className={classes.search}></img>
+                </Link>    
+                  <Form.Control type="text" placeholder="Search..." className={classes.input2} style={{  width: '200px', marginTop: '16px',marginRight: '10px',fontFamily: 'Inter',fontSize: '1em',height:"2.4em",borderRadius: "3em",border: "none",paddingLeft:"2em"}}/>
+                <Link to="/about" className={classes.link1}>Advanced Search</Link>
+              </div>
+              <div style={{display: 'flex',marginBottom: '0.5em'}}>
+                <h3 className={classes.h33} style={{fontFamily: 'Poppins'}}>Welcome Back, Doc!</h3>
+                <img alt="" src="bell.png" className={classes.img1}></img>
+                <Button variant="primary" type="submit" className={classes.button1} onClick={logUserOut}>Logout</Button> 
+              </div>  
+                  </Navbar> 
+
+                  </div>
             
         );
     }

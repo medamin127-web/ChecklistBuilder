@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom'
 import Form from 'react-bootstrap/Form'
 import Select from "react-select"
 import Dropdown from 'react-bootstrap/Dropdown'
-
+import { faPlus , faTrash,faCheck,faHome} from '@fortawesome/fontawesome-free-solid'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const customStyles = {
     indicatorsContainer: () => ({
       '.myDropDown': {
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
                      
               },
     },
+    
 
 }));
 export default function DoctorHome() {
@@ -49,40 +51,34 @@ export default function DoctorHome() {
     
     return (
         <div>
-              <Navbar collapseOnSelect expand="lg" style={{backgroundColor:'#0F8BB8',height:'68px'}} variant="dark">
+              <Navbar collapseOnSelect expand="lg" style={{backgroundColor:'rgb(15, 139, 184)',height:'60px'}} variant="dark">
                 <Nav className="mr-auto">
-                <Nav.Item style={{marginLeft: '-1em'}} >
-                    <Nav.Link href="/home" style={{textDecoation:'none'}}><img alt="" src="Logo.png" style={{width:'50px'}}></img></Nav.Link>
-                </Nav.Item>
                 <Nav.Item style={{marginTop: '1em'}}> 
-                    <h3 style={{color:'white',fontFamily:'Inter',marginBottom: 'auto',fontSize: '1.6em'}}>Site Name</h3>
+                    <Link to="/home" style={{textDecoration: 'none'}}><h3 style={{color:'white',fontFamily:'Poppins',marginBottom: '0.4em'}}>Symptom Checker</h3></Link>
                 </Nav.Item>
-                <Nav.Item style={{marginLeft:'7em',marginTop:'0.5em'}}>
+                <Nav.Item style={{marginTop:'0.5em',marginLeft: '1em'}}>
                     <Nav.Link href="/home" style={{textDecoation:'none',maxWidth: '3.8em'}}>
                         <img alt="" src="/search1.png" style={{width: '2.2em',height: '2.1em'}}className={classes.search}></img>
                     </Nav.Link>
                 </Nav.Item>
                 <Nav.Item  style={{marginTop: '0.8em'}}>
-                    <Form.Control type="text" placeholder="Search Checklist..." className={classes.input1} style={{fontFamily:'Josefin Sans'}}/>
+                    <Form.Control type="text" placeholder="Search Checklist..." className={classes.input1} style={{fontFamily:'Poppins'}}/>
                 </Nav.Item>
                 </Nav>
-                <ul style={{listStyle:'none' , listStyleType:'none',margin:'0',padding:'0'}}>
-                    <li style={{float:'left',marginRight:'15px'}}><Link><img src='home.png' alt='' style={{width:'50px',display:'box'}}></img></Link></li>
-                    <li style={{float:'left',marginRight:'15px'}}>
-                        <Dropdown style={{display:'box',marginTop: '0.7em'}} styles={customStyles}>
-                            <Dropdown.Toggle   as={Link} className={classes.link} styles={customStyles} style={{textDecoration:'none',fontFamily:'Josefin Sans',fontSize: '1.40em',Color:'#B3FFFB'}} variant="success" id="dropdown-basic">
-                                Checklists
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                                <Dropdown.Item href="#/action-1">Public</Dropdown.Item>
-                                <Dropdown.Item href="#/action-2">Private</Dropdown.Item>
-                                <Dropdown.Item href="#/action-3">On Going</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </li>
-                    <li style={{float:'left',marginRight:'15px',textDecoration:'none'}}><Link style={{textDecoration:'none'}}><h4 style={{display:'box',fontFamily:'Josefin Sans',fontSize: '1.40em',color: '#B3FFFB',marginTop:'0.65em',textDecoation:'none'}}>About</h4></Link></li>
-                    <li style={{float:'left',marginLeft:'1em'}}><Link to='Signup'><img src="/member.png" alt="" style={{width:'200px'}}></img></Link></li>
+                <ul style={{listStyle:'none' , listStyleType:'none',margin:'0',padding:'0',display: 'flex',flexDirection: 'row'}}>
+                    <div>
+                        <li style={{float:'left',marginRight:'1.5em'}}><Link to="/Home"><FontAwesomeIcon icon={faHome} style={{marginRight: '0.1em',fontSize: '2.6em',color: '#ffffff',background: 'rgb(40, 189, 247)',padding: '0.15em',borderRadius: '10%',marginTop: '0.15em'}}/></Link></li>
+                        <li style={{float:'left',marginRight:'1.5em'}}>
+                        <Link to="/Checklists" style={{textDecoration:'none'}} ><h3 style={{color:'white',fontFamily:'Cairo',marginTop: '0.6em',fontSize: '1.5em'}}> Checklists</h3></Link>
+                        </li>
+                        <li style={{float:'left',marginRight:'1.5em'}}>
+                        <Link to="/About" style={{textDecoration:'none'}}><h3 style={{color:'white',fontFamily:'Cairo',marginTop: '0.6em',fontSize: '1.5em'}}>About</h3></Link>
+                        </li>
+                        <li style={{float:'left',marginRight:'1.5em',marginTop: '0.5em'}}>
+                        <button style={{padding: '0.4em 1.4em',border:'none',background: '#28bdf7',borderRadius: '2em',fontFamily: 'Poppins',color: 'white',fontSize: '1.1em',textShadow: '2px 2px 2px black'}}>Contact</button>
+                        </li>
+                    </div>
+                    <li style={{float:'left',marginLeft:'1em'}}><Link to='Signup'><img src="/login.png" alt="" style={{width: '10em'}} ></img></Link></li>
                 </ul>
                 
                 
