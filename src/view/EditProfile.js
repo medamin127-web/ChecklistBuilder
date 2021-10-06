@@ -70,8 +70,8 @@ export default function EditProfile()  {
         const [id,setid] = useState();
         const [files,setfiles] = useState();
         const [imagesArray,setImagesArray] = useState();
-        const [length,setLength] = useState()
-        const [views,setViews] = useState()
+        const [length,setLength] = useState(0)
+        const [views,setViews] = useState(0)
         
          
      function uploadFiles (event) {
